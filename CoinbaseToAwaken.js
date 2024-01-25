@@ -32,11 +32,10 @@ for (let i = 1; i < data.length; i++) {
         Notes: notes
     };
 
-        // Setting fee amount and currency only if fee is greater than 0
-        if (fees > 0) {
-            transaction.FeeAmount = fees.toFixed(8);
-            transaction.FeeCurrency = asset; // Set the fee currency only if there's a fee
-        }
+    if (fees > 0) {
+        transaction.FeeAmount = fees.toFixed(8);
+        transaction.FeeCurrency = "USD"; // Set the fee currency only if there's a fee
+    }
 
         // Handling different transaction types
         if (transactionType === 'Send' || transactionType === 'Withdraw') {
