@@ -5,7 +5,7 @@ function reformatDataForAwaken() {
 
     let transactions = {};
     let processedData = [];
-
+I
     for (let i = 1; i < data.length; i++) {
         const row = data[i];
         const type = row[1];

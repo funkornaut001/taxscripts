@@ -1,3 +1,7 @@
+/**
+ * @todo - add om earn transaction type - treat staking as swaps 
+ */
+
 function reformatDataForAwaken() {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = ss.getSheetByName("kraken-ledger");
@@ -5,7 +9,7 @@ function reformatDataForAwaken() {
   
     let trades = {};
     let processedData = [];
-    processedData.push(["Date", "Received Quantity", "Received Currency", "Sent Quantity", "Sent Currency", "Fee Amount", "Fee Currency", "Transaction Hash", "Tag"]);
+    processedData.push(["Date", "Received Quantity", "Received Currency", "Sent Quantity", "Sent Currency", "Fee Amount", "Fee Currency", "Transaction Hash", "Notes"]);
   
     // Helper function to add data to processedData with checks for empty or 0 values.
     function addTransaction(date, receivedQuantity, receivedCurrency, sentQuantity, sentCurrency, feeAmount, feeCurrency, txid, tag) {
