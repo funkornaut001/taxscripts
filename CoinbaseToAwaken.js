@@ -32,13 +32,16 @@ for (let i = 1; i < data.length; i++) {
         Notes: notes
     };
 
-    if (fees > 0) {
-        transaction.FeeAmount = fees.toFixed(8);
-        transaction.FeeCurrency = "USD"; // Set the fee currency only if there's a fee
+    if (fees == 0) {
+        transaction.FeeAmount = '';
+        transaction.FeeCurrency = ''; 
+    } else {
+        transaction.FeeAmount = Math.abs(fees).toFixed(8);
+        transaction.FeeCurrency = "USD"
     }
 
         // Handling different transaction types
-        if (transactionType === 'Send' || transactionType === 'Withdraw') {
+        if (transactionType === 'Send' || transactionType === 'Withdraw' || transactionType === 'Withdrawal') {
     transaction.SentQuantity = quantityReceived.toFixed(8);
     transaction.SentCurrency = asset; // For send/withdraw, asset itself is the sent currency
 } else if (transactionType === 'Advance Trade Buy' || transactionType === 'Convert' || transactionType === 'Buy') {
@@ -46,7 +49,16 @@ for (let i = 1; i < data.length; i++) {
     transaction.ReceivedCurrency = asset;
     transaction.SentQuantity = subtotal.toFixed(8); // Assuming subtotal represents the quantity of USD sent
     transaction.SentCurrency = "USD"; // Explicitly setting USD for these transaction types
-} else if (['Deposit', 'Receive', 'Learning Reward', 'Exchange Deposit'].includes(transactionType)) {
+        } else if (transactionType === 'Advance Trade Sell' || transactionType === 'Sell') {
+    
+            transaction.ReceivedQuantity = subtotal.toFixed(8);
+            transaction.ReceivedCurrency = "USD";
+            transaction.SentQuantity = quantityReceived.toFixed(8);
+            transaction.SentCurrency = asset; 
+
+            
+
+        }  else if (['Deposit', 'Receive', 'Learning Reward', 'Exchange Deposit'].includes(transactionType)) {
     transaction.ReceivedQuantity = quantityReceived.toFixed(8);
     transaction.ReceivedCurrency = asset;
     transaction.SentQuantity = ''; // Ensuring no sent quantity for deposit-like transactions

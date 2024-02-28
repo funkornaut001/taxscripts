@@ -12,7 +12,7 @@ function reformatDataForAwaken() {
     processedData.push(["Date", "Received Quantity", "Received Currency", "Sent Quantity", "Sent Currency", "Fee Amount", "Fee Currency", "Transaction Hash", "Notes"]);
   
     // Helper function to add data to processedData with checks for empty or 0 values.
-    function addTransaction(date, receivedQuantity, receivedCurrency, sentQuantity, sentCurrency, feeAmount, feeCurrency, txid, tag) {
+    function addTransaction(date, receivedQuantity, receivedCurrency, sentQuantity, sentCurrency, feeAmount, feeCurrency, txid, notes) {
       processedData.push([
         date,
         receivedQuantity > 0 ? receivedQuantity.toFixed(8) : "",
@@ -22,7 +22,7 @@ function reformatDataForAwaken() {
         feeAmount > 0 ? feeAmount.toFixed(8) : "",
         feeAmount > 0 ? feeCurrency : "",
         txid,
-        tag
+        notes
       ]);
     }
   
@@ -33,12 +33,12 @@ function reformatDataForAwaken() {
       const formattedDate = formatDate(originalTime);
       const numericAmount = parseFloat(amount) || 0;
       const numericFee = parseFloat(fee) || 0;
-      const tag = subtype || "";
+      const notes = subtype || "";
   
       if (type === "trade") {
         const tradeKey = refid + originalTime;
         if (!trades[tradeKey]) {
-          trades[tradeKey] = { received: {}, sent: {}, fee: 0, txids: [], tag: tag, time: formattedDate };
+          trades[tradeKey] = { received: {}, sent: {}, fee: 0, txids: [], notes: notes, time: formattedDate };
         }
         const trade = trades[tradeKey];
         trade.txids.push(txid);
@@ -56,7 +56,7 @@ function reformatDataForAwaken() {
         const feeAmount = (type === "withdrawal" || type === "transfer") ? numericFee : 0;
   
         // Add non-trade transactions immediately to processedData
-        addTransaction(formattedDate, receivedQuantity, currency, sentQuantity, currency, feeAmount, currency, txid, tag);
+        addTransaction(formattedDate, receivedQuantity, currency, sentQuantity, currency, feeAmount, currency, txid, notes);
       }
     }
   
@@ -64,7 +64,7 @@ function reformatDataForAwaken() {
     const tradeKeys = Object.keys(trades).sort((a, b) => new Date(trades[a].time) - new Date(trades[b].time));
     tradeKeys.forEach(key => {
       const trade = trades[key];
-      addTransaction(trade.time, trade.received.quantity || 0, trade.received.currency, trade.sent.quantity || 0, trade.sent.currency, trade.fee, trade.sent.currency, trade.txids.join(''), trade.tag);
+      addTransaction(trade.time, trade.received.quantity || 0, trade.received.currency, trade.sent.quantity || 0, trade.sent.currency, trade.fee, trade.sent.currency, trade.txids.join(''), trade.notes);
     });
   
     // Output the processed data to a new sheet
