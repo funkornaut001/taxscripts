@@ -40,16 +40,27 @@ for (let i = 1; i < data.length; i++) {
         transaction.FeeCurrency = "USD"
     }
 
-        // Handling different transaction types
-        if (transactionType === 'Send' || transactionType === 'Withdraw' || transactionType === 'Withdrawal') {
+    // Handling different transaction types
+    if (transactionType === 'Send' || transactionType === 'Withdraw' || transactionType === 'Withdrawal') {
     transaction.SentQuantity = quantityReceived.toFixed(8);
     transaction.SentCurrency = asset; // For send/withdraw, asset itself is the sent currency
-} else if (transactionType === 'Advance Trade Buy' || transactionType === 'Convert' || transactionType === 'Buy') {
+    } else if (transactionType === 'Advance Trade Buy' || transactionType === 'Buy') {
     transaction.ReceivedQuantity = quantityReceived.toFixed(8);
     transaction.ReceivedCurrency = asset;
     transaction.SentQuantity = subtotal.toFixed(8); // Assuming subtotal represents the quantity of USD sent
     transaction.SentCurrency = "USD"; // Explicitly setting USD for these transaction types
-        } else if (transactionType === 'Advance Trade Sell' || transactionType === 'Sell') {
+        } 
+        else if (transactionType === 'Convert') {
+        // Parse the 'Notes' for convert details
+        const convertDetails = notes.match(/Converted [\d.]+ \w+ to ([\d.]+) (\w+)/);
+        if (convertDetails) {
+            transaction.SentQuantity = convertDetails[1]; // Quantity of AVAX sent
+            transaction.SentCurrency = convertDetails[2]; // Currency of AVAX
+            transaction.ReceivedQuantity = quantityReceived.toFixed(8);
+            transaction.ReceivedCurrency = asset;
+        }
+        }
+    else if (transactionType === 'Advance Trade Sell' || transactionType === 'Sell') {
     
             transaction.ReceivedQuantity = subtotal.toFixed(8);
             transaction.ReceivedCurrency = "USD";
